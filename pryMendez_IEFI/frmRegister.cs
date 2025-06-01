@@ -16,5 +16,113 @@ namespace pryMendez_IEFI
         {
             InitializeComponent();
         }
+
+        private void btnRegister_Click(object sender, EventArgs e)
+        {
+            if (!ValidateRegisterFields())
+            {
+                return;
+            }
+            else
+            {
+                clsConnection db = new clsConnection();
+                bool success = db.InsertUser(
+                    txtRegisterUsername.Text,
+                    txtRegisterPassword.Text,
+                    txtRegisterEmail.Text,
+                    dateRegisterBirthday.Value,
+                    txtRegisterCity.Text,
+                    numRegisterAge.Value,
+                    optRegisterAdmin.Checked
+                );
+
+                if (success)
+                {
+                    MessageBox.Show("User registered successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Hide();
+                    frmLogin loginForm = new frmLogin();
+                    loginForm.ShowDialog();
+                }
+            }
+        }
+
+        private bool ValidateRegisterFields()
+        {
+            // 1. Username: not empty and does not already exist in the database //
+            if (string.IsNullOrWhiteSpace(txtRegisterUsername.Text))
+            {
+                MessageBox.Show("Username is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            else
+            {
+                clsConnection db = new clsConnection();
+                if (db.UserExists(txtRegisterUsername.Text))
+                {
+                    MessageBox.Show("Username already exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            // 2. Email: not empty and valid format //
+            if (string.IsNullOrWhiteSpace(txtRegisterEmail.Text))
+            {
+                MessageBox.Show("Email is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            else
+            {
+                var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+                if (!System.Text.RegularExpressions.Regex.IsMatch(txtRegisterEmail.Text, emailPattern))
+                {
+                    MessageBox.Show("Email format is invalid.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            // 3. Password: not empty and strong (min 8 chars, 1 special char) //
+            if (string.IsNullOrWhiteSpace(txtRegisterPassword.Text))
+            {
+                MessageBox.Show("Password is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            else
+            {
+                var password = txtRegisterPassword.Text;
+                if (password.Length < 8 || !password.Any(ch => !char.IsLetterOrDigit(ch)))
+                {
+                    MessageBox.Show("Password must be at least 8 characters and contain a special character.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            // 4. Age: not empty, valid number, and > 0 //
+            if (string.IsNullOrWhiteSpace(numRegisterAge.Text) || !int.TryParse(numRegisterAge.Text, out int age) || age <= 0)
+            {
+                MessageBox.Show("Age must be a valid positive number.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // 5. Birthday: valid date and < today //
+            if (dateRegisterBirthday.Value >= DateTime.Today)
+            {
+                MessageBox.Show("Birthday must be a valid date before today.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // 6. City: not empty //
+            if (string.IsNullOrWhiteSpace(txtRegisterCity.Text))
+            {
+                MessageBox.Show("City is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void txtRegisterPassword_TextChanged(object sender, EventArgs e)
+        {
+            txtRegisterPassword.PasswordChar = '*';
+        }
     }
 }

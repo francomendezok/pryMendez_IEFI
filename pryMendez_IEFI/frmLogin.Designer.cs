@@ -74,6 +74,7 @@
             btnGoRegister.TabIndex = 5;
             btnGoRegister.Text = "Register";
             btnGoRegister.UseVisualStyleBackColor = true;
+            btnGoRegister.Click += btnGoRegister_Click;
             // 
             // btnLogin
             // 
@@ -83,6 +84,7 @@
             btnLogin.TabIndex = 4;
             btnLogin.Text = "Login";
             btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.Click += btnLogin_Click;
             // 
             // label1
             // 
@@ -99,6 +101,7 @@
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(125, 27);
             txtPassword.TabIndex = 2;
+            txtPassword.TextChanged += txtPassword_TextChanged;
             // 
             // lblUsername
             // 
