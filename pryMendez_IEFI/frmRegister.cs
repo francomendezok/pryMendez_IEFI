@@ -19,10 +19,11 @@ namespace pryMendez_IEFI
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            if (!ValidateRegisterFields())
+            if (!ValidateRegisterFields() && !ValidateLengthFields())
             {
                 return;
             }
+               
             else
             {
                 clsConnection db = new clsConnection();
@@ -120,6 +121,25 @@ namespace pryMendez_IEFI
             return true;
         }
 
+        private bool ValidateLengthFields()
+        {
+            if (txtRegisterUsername.Text.Length < 3 || txtRegisterUsername.Text.Length > 20)
+            {
+                MessageBox.Show("Username must be between 3 and 20 characters.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            if (txtRegisterPassword.Text.Length < 8 || txtRegisterPassword.Text.Length > 16)
+            {
+                MessageBox.Show("Password must be between 8 and 16 characters.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            if (txtRegisterCity.Text.Length < 2 || txtRegisterCity.Text.Length > 20)
+            {
+                MessageBox.Show("City must be between 2 and 20 characters.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
+        }
         private void txtRegisterPassword_TextChanged(object sender, EventArgs e)
         {
             txtRegisterPassword.PasswordChar = '*';

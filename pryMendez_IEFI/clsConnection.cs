@@ -90,5 +90,71 @@ namespace pryMendez_IEFI
                 return false;
             }
         }
+
+        public string GetHashedPassword(string username)
+        {
+            try
+            {
+                Connect();
+                string query = "SELECT [Password] FROM Users WHERE Username = ?";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("?", username);
+                    object result = cmd.ExecuteScalar();
+                    connection.Close();
+                    return result != null ? result.ToString() : null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving user: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+                return null;
+            }
+        }
+
+        public clsUser GetUserByUsername(string username)
+        {
+            clsUser user = null;
+            OleDbCommand cmd = null;
+            OleDbDataReader reader = null;
+            try
+            {
+                Connect();
+                string query = "SELECT ID, Username, Email, City, Birthday, Age, Admin FROM Users WHERE Username = ?";
+                cmd = new OleDbCommand(query, connection);
+                cmd.Parameters.AddWithValue("?", username);
+                reader = cmd.ExecuteReader(); // read db and gets data // 
+                if (reader.Read())
+                {
+                    user = new clsUser
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("ID")),
+                        Username = reader.GetString(reader.GetOrdinal("Username")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        City = reader.GetString(reader.GetOrdinal("City")),
+                        Birthday = reader.GetDateTime(reader.GetOrdinal("Birthday")),
+                        Age = reader.GetInt32(reader.GetOrdinal("Age")),
+                        Admin = reader.GetBoolean(reader.GetOrdinal("Admin")),
+                        Tasks = new List<string>()
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching user: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+                if (cmd != null)
+                    cmd.Dispose();
+            }
+            return user;
+        }
     }
 }
