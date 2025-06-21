@@ -19,11 +19,11 @@ namespace pryMendez_IEFI
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            if (!ValidateRegisterFields() && !ValidateLengthFields())
+            if (!ValidateRegisterFields() || !ValidateLengthFields())
             {
                 return;
             }
-               
+
             else
             {
                 clsConnection db = new clsConnection();
@@ -143,6 +143,11 @@ namespace pryMendez_IEFI
         private void txtRegisterPassword_TextChanged(object sender, EventArgs e)
         {
             txtRegisterPassword.PasswordChar = '*';
+        }
+
+        private void frmRegister_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

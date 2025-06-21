@@ -15,14 +15,33 @@ namespace pryMendez_IEFI
     internal class clsConnection
     {
         private OleDbConnection connection;
+        private static string dbPath = null;
 
         public void Connect()
         {
             try
             {
-                // Corrected connection string with proper escaping of backslashes
-                string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\PCFRANCO\Desktop\pryMendez_IEFI\pryMendez_IEFI\bin\Debug\iefi.accdb";
+                if (string.IsNullOrEmpty(dbPath))
+                {
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    {
+                        openFileDialog.Title = "Select Access Database";
+                        openFileDialog.Filter = "Access Database (*.accdb)|*.accdb|All Files (*.*)|*.*";
+                        openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            dbPath = openFileDialog.FileName;
+                        }
+                        else
+                        {
+                            MessageBox.Show("No database file selected.", "Connection Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+                }
+
+                string connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath}";
                 connection = new OleDbConnection(connectionString);
                 connection.Open();
             }
@@ -42,7 +61,7 @@ namespace pryMendez_IEFI
             try
             {
                 Connect();
-                string query = "INSERT INTO Users (Username, [Password], Email, Birthday, City, Age, Admin, Elapsed_Time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                string query = "INSERT INTO Users (Username, [Password], Email, Birthday, City, Age, Admin, Elapsed_Total_Time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 using (OleDbCommand cmd = new OleDbCommand(query, connection))
                 {
                     cmd.Parameters.AddWithValue("?", username);
@@ -155,6 +174,61 @@ namespace pryMendez_IEFI
                     cmd.Dispose();
             }
             return user;
+        }
+
+        public void UpdateElapsedTime(string username, string sessionElapsedTime)
+        {
+            try
+            {
+                Connect();
+
+                // 1. Get current elapsed time from DB
+                string selectQuery = "SELECT Elapsed_Total_Time FROM Users WHERE Username = ?";
+                string currentElapsed = "00:00:00";
+                using (var selectCmd = new OleDbCommand(selectQuery, connection))
+                {
+                    selectCmd.Parameters.AddWithValue("?", username);
+                    object result = selectCmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                        currentElapsed = result.ToString();
+                }
+
+                // 2. Convert both times to TimeSpan and sum
+                TimeSpan previous = TimeSpan.TryParse(currentElapsed, out var prev) ? prev : TimeSpan.Zero;
+                TimeSpan current = TimeSpan.TryParse(sessionElapsedTime, out var curr) ? curr : TimeSpan.Zero;
+                TimeSpan total = previous + current;
+                string totalElapsed = total.ToString(@"hh\:mm\:ss");
+
+                // 3. Update DB with new total
+                string updateQuery = "UPDATE Users SET Elapsed_Total_Time = ? WHERE Username = ?";
+                using (var updateCmd = new OleDbCommand(updateQuery, connection))
+                {
+                    updateCmd.Parameters.AddWithValue("?", totalElapsed);
+                    updateCmd.Parameters.AddWithValue("?", username);
+                    updateCmd.ExecuteNonQuery();
+                }
+
+                DateTime fecha = DateTime.Now;
+                fecha = new DateTime(fecha.Year, fecha.Month, fecha.Day);
+
+                // 4. Insert into Logs table
+                string insertLogQuery = "INSERT INTO Logs (Username, Elapsed_Time, Date_Actual_Time) VALUES (?, ?, ?)";
+                using (var logCmd = new OleDbCommand(insertLogQuery, connection))
+                {
+                    logCmd.Parameters.AddWithValue("?", username);
+                    logCmd.Parameters.AddWithValue("?", sessionElapsedTime);
+                    logCmd.Parameters.AddWithValue("?", fecha);
+                    logCmd.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating elapsed time: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
         }
     }
 }

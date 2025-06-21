@@ -10,16 +10,22 @@ using System.Windows.Forms;
 
 namespace pryMendez_IEFI
 {
-    public partial class frmAuditoria : Form
+
+    public partial class frmCrud : Form
     {
         public clsUser CurrentUser { get; set; }
 
-        public frmAuditoria()
+        public frmCrud()
         {
             InitializeComponent();
         }
 
-        private void btnBackToMain_Click(object sender, EventArgs e)
+        private void frmCrud_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnBackToMainCrud_Click(object sender, EventArgs e)
         {
             this.Hide();
             frmMain mainForm = new frmMain();
@@ -28,5 +34,3 @@ namespace pryMendez_IEFI
         }
     }
 }
-
-

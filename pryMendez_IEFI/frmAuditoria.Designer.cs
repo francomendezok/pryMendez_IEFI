@@ -28,60 +28,85 @@
         /// </summary>
         private void InitializeComponent()
         {
-            lblAuditoriaForUser = new Label();
-            dgvAuditoria = new DataGridView();
-            lblAuditoriaUsername = new Label();
-            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            ((System.ComponentModel.ISupportInitialize)dgvAuditoria).BeginInit();
+            tabControlUserInfo = new TabControl();
+            tabPageUserInfo = new TabPage();
+            tabPageUserCredentials = new TabPage();
+            tabPageUserLogs = new TabPage();
+            btnBackToMain = new Button();
+            tabControlUserInfo.SuspendLayout();
             SuspendLayout();
             // 
-            // lblAuditoriaForUser
+            // tabControlUserInfo
             // 
-            lblAuditoriaForUser.AutoSize = true;
-            lblAuditoriaForUser.Location = new Point(280, 59);
-            lblAuditoriaForUser.Name = "lblAuditoriaForUser";
-            lblAuditoriaForUser.Size = new Size(102, 15);
-            lblAuditoriaForUser.TabIndex = 7;
-            lblAuditoriaForUser.Text = "Auditoria for user:";
+            tabControlUserInfo.Controls.Add(tabPageUserInfo);
+            tabControlUserInfo.Controls.Add(tabPageUserCredentials);
+            tabControlUserInfo.Controls.Add(tabPageUserLogs);
+            tabControlUserInfo.Location = new Point(49, 21);
+            tabControlUserInfo.Name = "tabControlUserInfo";
+            tabControlUserInfo.SelectedIndex = 0;
+            tabControlUserInfo.Size = new Size(645, 404);
+            tabControlUserInfo.TabIndex = 0;
             // 
-            // dgvAuditoria
+            // tabPageUserInfo
             // 
-            dgvAuditoria.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvAuditoria.Location = new Point(280, 81);
-            dgvAuditoria.Name = "dgvAuditoria";
-            dgvAuditoria.Size = new Size(240, 310);
-            dgvAuditoria.TabIndex = 6;
+            tabPageUserInfo.Location = new Point(4, 29);
+            tabPageUserInfo.Name = "tabPageUserInfo";
+            tabPageUserInfo.Padding = new Padding(3);
+            tabPageUserInfo.Size = new Size(637, 371);
+            tabPageUserInfo.TabIndex = 0;
+            tabPageUserInfo.Text = "User Info";
+            tabPageUserInfo.UseVisualStyleBackColor = true;
             // 
-            // lblAuditoriaUsername
+            // tabPageUserCredentials
             // 
-            lblAuditoriaUsername.AutoSize = true;
-            lblAuditoriaUsername.Location = new Point(388, 59);
-            lblAuditoriaUsername.Name = "lblAuditoriaUsername";
-            lblAuditoriaUsername.Size = new Size(96, 15);
-            lblAuditoriaUsername.TabIndex = 8;
-            lblAuditoriaUsername.Text = "francomendezok";
+            tabPageUserCredentials.Location = new Point(4, 29);
+            tabPageUserCredentials.Name = "tabPageUserCredentials";
+            tabPageUserCredentials.Padding = new Padding(3);
+            tabPageUserCredentials.Size = new Size(637, 371);
+            tabPageUserCredentials.TabIndex = 1;
+            tabPageUserCredentials.Text = "User Credentials";
+            tabPageUserCredentials.UseVisualStyleBackColor = true;
             // 
-            // frmAuditoria
+            // tabPageUserLogs
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            tabPageUserLogs.Location = new Point(4, 29);
+            tabPageUserLogs.Name = "tabPageUserLogs";
+            tabPageUserLogs.Padding = new Padding(3);
+            tabPageUserLogs.Size = new Size(637, 371);
+            tabPageUserLogs.TabIndex = 2;
+            tabPageUserLogs.Text = "User Logs";
+            tabPageUserLogs.UseVisualStyleBackColor = true;
+            // 
+            // btnBackToMain
+            // 
+            btnBackToMain.Location = new Point(519, 443);
+            btnBackToMain.Name = "btnBackToMain";
+            btnBackToMain.Size = new Size(175, 29);
+            btnBackToMain.TabIndex = 1;
+            btnBackToMain.Text = "Back to Main";
+            btnBackToMain.UseVisualStyleBackColor = true;
+            btnBackToMain.Click += btnBackToMain_Click;
+            // 
+            // frmAdminDashboard
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.ActiveBorder;
-            ClientSize = new Size(800, 450);
-            Controls.Add(lblAuditoriaUsername);
-            Controls.Add(lblAuditoriaForUser);
-            Controls.Add(dgvAuditoria);
-            Name = "frmAuditoria";
-            Text = "Auditoria";
-            ((System.ComponentModel.ISupportInitialize)dgvAuditoria).EndInit();
+            BackColor = SystemColors.ActiveCaption;
+            ClientSize = new Size(803, 484);
+            Controls.Add(btnBackToMain);
+            Controls.Add(tabControlUserInfo);
+            Name = "frmAdminDashboard";
+            Text = "Admin Dashboard";
+            tabControlUserInfo.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private Label lblAuditoriaForUser;
-        private DataGridView dgvAuditoria;
-        private Label lblAuditoriaUsername;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private TabControl tabControlUserInfo;
+        private TabPage tabPageUserInfo;
+        private TabPage tabPageUserCredentials;
+        private TabPage tabPageUserLogs;
+        private Button btnBackToMain;
     }
 }

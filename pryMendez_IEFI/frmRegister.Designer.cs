@@ -204,6 +204,7 @@
             Margin = new Padding(3, 4, 3, 4);
             Name = "frmRegister";
             Text = "Register";
+            Load += frmRegister_Load;
             groupRegister.ResumeLayout(false);
             groupRegister.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numRegisterAge).EndInit();
