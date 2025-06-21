@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace pryMendez_IEFI
+﻿namespace pryMendez_IEFI
 {
     public partial class frmRegister : Form
     {
@@ -19,11 +9,11 @@ namespace pryMendez_IEFI
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            if (!ValidateRegisterFields() && !ValidateLengthFields())
+            if (!ValidateRegisterFields() || !ValidateLengthFields())
             {
                 return;
             }
-               
+
             else
             {
                 clsConnection db = new clsConnection();

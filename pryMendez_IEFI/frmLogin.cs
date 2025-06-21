@@ -7,6 +7,8 @@ namespace pryMendez_IEFI
             InitializeComponent();
         }
 
+        public clsUser CurrentUser { get; set; }
+
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
@@ -14,8 +16,7 @@ namespace pryMendez_IEFI
 
         private void frmLogin_Load(object sender, EventArgs e)
         {
-            //clsConnection conn = new clsConnection();
-            //conn.Connect();
+            
         }
 
         private void btnGoRegister_Click(object sender, EventArgs e)
@@ -48,15 +49,24 @@ namespace pryMendez_IEFI
 
             if (isValid)
             {
-                MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                clsConnection conn = new clsConnection();
-                clsUser user = conn.GetUserByUsername(username);
+                clsUser user = db.GetUserByUsername(username);
 
-                this.Hide();
-                frmMain mainForm = new frmMain();
-                mainForm.CurrentUser = user; // Pass the user via property
-                mainForm.ShowDialog();
-                this.Close();
+                if (user != null)
+                {
+                    user.StartSession(); // Start timing the session
+
+                    MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    this.Hide();
+                    frmMain mainForm = new frmMain();
+                    mainForm.CurrentUser = user; // Pass the user to frmMain
+                    mainForm.ShowDialog();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Could not retrieve user data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
