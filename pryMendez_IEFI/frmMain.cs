@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace pryMendez_IEFI
+﻿namespace pryMendez_IEFI
 {
     public partial class frmMain : Form
     {
@@ -23,7 +13,7 @@ namespace pryMendez_IEFI
         private void frmMain_Load(object sender, EventArgs e)
         {
             lblMainUsername.Text = $"Username: {CurrentUser.Username}";
-            lblMainWelcome.Text = $"Welcome back, {CurrentUser.Username}!";
+            lblWelcome.Text = $"Welcome back, {CurrentUser.Username}!";
             lblMainUserStatus.Text = $"User Status: {(CurrentUser.Admin ? "Admin" : "User")}";
             lblMainDate.Text = $"Date: {DateTime.Now.ToShortDateString()}";
         }
@@ -82,14 +72,6 @@ namespace pryMendez_IEFI
             }
         }
 
-        public static void StartMainForm(clsUser user)
-        {
-            user.StartSession();
-            frmMain mainForm = new frmMain();
-            mainForm.CurrentUser = user; // Pass the same object
-            mainForm.ShowDialog();
-        }
-
         private void stripMainAuditoria_Click(object sender, EventArgs e)
         {
             if (CurrentUser == null)
@@ -97,20 +79,19 @@ namespace pryMendez_IEFI
                 MessageBox.Show("No user is currently logged in.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            this.Hide();
-            frmAuditoria auditoriaForm = new frmAuditoria();
-            auditoriaForm.CurrentUser = this.CurrentUser;
-            auditoriaForm.ShowDialog();
-        }
+            else if (!CurrentUser.Admin)
+            {
+                MessageBox.Show("You do not have permission to access this feature.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-        private void lblMainWelcome_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void frmMain_Load_1(object sender, EventArgs e)
-        {
-
+            else
+            {
+                this.Hide();
+                frmAuditoria auditoriaForm = new frmAuditoria();
+                auditoriaForm.CurrentUser = this.CurrentUser;
+                auditoriaForm.ShowDialog();
+            }
         }
     }
 }

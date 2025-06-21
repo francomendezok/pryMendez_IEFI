@@ -1,14 +1,6 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using System.Data;
-using System.Windows.Forms;
-using BCrypt.Net; 
+ 
 
 namespace pryMendez_IEFI
 {
@@ -226,6 +218,143 @@ namespace pryMendez_IEFI
             catch (Exception ex)
             {
                 MessageBox.Show("Error updating elapsed time: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+
+        public DataTable GetAllUserInfo()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                Connect();
+                string query = "SELECT Email, Birthday, City, Age, Admin FROM Users";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching users: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return dt;
+        }
+        public DataTable GetCompleteUserInfo()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                Connect();
+                string query = "SELECT * FROM Users";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching users: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return dt;
+        }
+        public DataTable GetAllUserCredentials()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                Connect();
+                string query = "SELECT Username, Password FROM Users";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching users: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return dt;
+        }
+        public DataTable GetAllUserLogs()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                Connect();
+                string query = "SELECT Username, Elapsed_Time, Date_Actual_Time FROM Logs";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching users: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+            return dt;
+        }
+
+        public void UpdateUser(int id, string username, string email, string city, DateTime birthday, int age, bool admin)
+        {
+            try
+            {
+                Connect();
+                string query = "UPDATE Users SET Username=?, Email=?, City=?, Birthday=?, Age=?, Admin=? WHERE ID=?";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("?", username);
+                    cmd.Parameters.AddWithValue("?", email);
+                    cmd.Parameters.AddWithValue("?", city);
+                    cmd.Parameters.AddWithValue("?", birthday);
+                    cmd.Parameters.AddWithValue("?", age);
+                    cmd.Parameters.AddWithValue("?", admin);
+                    cmd.Parameters.AddWithValue("?", id);
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating user: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (connection != null && connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
+        }
+
+        public void DeleteUser(int id)
+        {
+            try
+            {
+                Connect();
+                string query = "DELETE FROM Users WHERE ID=?";
+                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("?", id);
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error deleting user: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (connection != null && connection.State == ConnectionState.Open)
                     connection.Close();
             }
