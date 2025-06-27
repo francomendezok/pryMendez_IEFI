@@ -7,6 +7,7 @@
         public frmMain()
         {
             InitializeComponent();
+            // override y piso el metodo Load del formulario, le hago un append
             this.FormClosing += frmMain_FormClosing;
         }
 
@@ -22,6 +23,7 @@
         {
             if (CurrentUser != null)
             {
+                // al cerrar el formulario, se finaliza la sesion del usuario
                 CurrentUser.EndSession();
             }
         }
@@ -39,6 +41,7 @@
 
             else if (!CurrentUser.Admin)
             {
+                // solo los administradores pueden acceder a la funcionalidad de CRUD
                 MessageBox.Show("You do not have permission to access this feature.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -47,7 +50,8 @@
             {
                 this.Hide();
                 frmCrud crudForm = new frmCrud();
-                crudForm.CurrentUser = this.CurrentUser; // Pass the current user to the CRUD form
+                // paso el usuario actual al formulario de CRUD
+                crudForm.CurrentUser = this.CurrentUser; 
                 crudForm.ShowDialog();
             }
 
@@ -57,13 +61,13 @@
         {
             if (CurrentUser != null)
             {
-                CurrentUser.EndSession(); // show total time //
+                CurrentUser.EndSession(); // muestra el tiempo de sesion al cerrar el formulario
                 this.Hide();
                 frmLogin loginForm = new frmLogin();
                 loginForm.CurrentUser = this.CurrentUser;
                 loginForm.ShowDialog();
 
-                // close main form after login form is closed //
+                //cierra form main al cerrar el formulario de login, 
                 this.Close();
             }
             else

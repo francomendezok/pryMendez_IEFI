@@ -8,6 +8,7 @@ namespace pryMendez_IEFI
         }
 
         public clsUser CurrentUser { get; set; }
+        // usuario actual que se está utilizando en la sesión
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
@@ -38,6 +39,7 @@ namespace pryMendez_IEFI
 
             clsConnection db = new clsConnection();
             string hashedPassword = db.GetHashedPassword(username);
+            // obtengo la contraseña hasheada del usuario ingresado
 
             if (hashedPassword == null)
             {
@@ -46,6 +48,7 @@ namespace pryMendez_IEFI
             }
 
             bool isValid = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+            // verifico si la contraseña ingresada coincide con la hasheada
 
             if (isValid)
             {
@@ -53,13 +56,13 @@ namespace pryMendez_IEFI
 
                 if (user != null)
                 {
-                    user.StartSession(); // Start timing the session
+                    user.StartSession(); // empiezo a contar el tiempo de sesión
 
                     MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     this.Hide();
                     frmMain mainForm = new frmMain();
-                    mainForm.CurrentUser = user; // Pass the user to frmMain
+                    mainForm.CurrentUser = user; // paso el usuario actual al formulario principal
                     mainForm.ShowDialog();
                     this.Close();
                 }

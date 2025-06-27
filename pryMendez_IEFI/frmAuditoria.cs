@@ -25,6 +25,7 @@
 
         private void frmAuditoria_Load(object sender, EventArgs e)
         {
+            // lleno las tabla con mi base de datos, ajusto la vista de cada dgv
             clsConnection db = new clsConnection();
             dgvUserInfo.DataSource = db.GetAllUserInfo();
             dgvUserCredentials.DataSource = db.GetAllUserCredentials();
